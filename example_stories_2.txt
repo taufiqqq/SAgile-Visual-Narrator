@@ -1,0 +1,3 @@
+As a Visitor, I want to choose an event so that I can book a ticket for that event.
+As a Visitor, I want to filter on event type, so that I can only see events of the type I want.
+As a Visitor, I want to see the ticket price.
