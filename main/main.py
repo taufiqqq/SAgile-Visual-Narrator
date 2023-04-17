@@ -1,6 +1,7 @@
 import argparse
 from parser.parser import parse_main
-import spacy
+from transformer import transform
+import os
 
 def main():
     parser = argparse.ArgumentParser()
@@ -9,7 +10,14 @@ def main():
 
     with open(args.filename) as f:
         userStories = parse_main(f)
-        for usrSt in userStories:        
-            print(usrSt)
+        # for usrSt in userStories:        
+        #     print(usrSt)
+            
+        actors, uc, relationships = transform.create_relationships(userStories)
+        # print(actors, uc, relationships)
+        
+        path, filename = transform.create_text_file(actors, uc, relationships)
+        
+        transform.make_diagram(path,filename)
 
     # TODO apply heuristics
