@@ -1,0 +1,15 @@
+As a Visitor, I can create a new account.
+As a Visitor, I can log in.
+As a Visitor, I am able to log out.
+As a Visitor, I want to choose an event so that I can book a ticket for that event.
+As a Visitor, I want to filter on event type, so that I can only see events of the type I want.
+As a Visitor, I can rename my account.
+As a Visitor, I can change my account password.
+As an Administrator, I can create a new account.
+As an Administrator, I can log in.
+As an Administrator, I am able to log out.
+As an Administrator, I can suspend accounts.
+As an Administrator, I am able to respond to users' problems.
+As a Guest, I can log in.
+As a Guest, I can log out.
+As a Guest, I can view events.

@@ -1,5 +1,6 @@
 ROLE_INDICATORS = [
-    [{"LOWER": "as"}, {"LOWER": "a"}]
+    [{"LOWER": "as"}, {"LOWER": "an"}],
+    [{"LOWER": "as"}, {"LOWER": "a"}],
 ]
 
 MEANS_INDICATORS = [

@@ -32,7 +32,7 @@ def create_relationships(userStories):
             
     return actors, useCases, relationships
 
-def create_text_file(actors, use_cases, relationships):
+def create_text_file(actors, use_cases, relationships, system):
     plantuml = '\n@startuml\nleft to right direction\n'
     
     # declare actors
@@ -40,7 +40,7 @@ def create_text_file(actors, use_cases, relationships):
         plantuml += f'\nactor "{item}"'
     
     # declare uc
-    plantuml += '\n\nrectangle System {'
+    plantuml += f'\n\nrectangle {system} {{'
     for key, item in use_cases.items():
         plantuml += f'\n\tusecase "{item}"'
     plantuml += '\n}\n'
@@ -60,7 +60,7 @@ def create_text_file(actors, use_cases, relationships):
             
     plantuml += '\n\n@enduml'
     
-    ucdName = "ucd.txt"
+    ucdName = f"{system}.txt"
     pathToUCDText = f"transformer/plantuml/{ucdName}"
     with open(pathToUCDText, "w") as f:
         f.write(plantuml)
