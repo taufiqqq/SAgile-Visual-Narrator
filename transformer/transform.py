@@ -61,7 +61,9 @@ def create_text_file(actors, use_cases, relationships, system):
     plantuml += '\n\n@enduml'
     
     ucdName = f"{system}.txt"
-    pathToUCDText = f"transformer/plantuml/{ucdName}"
+    # cwd = os.getcwd()
+    app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    pathToUCDText = os.path.join(app_dir, 'transformer', 'plantuml', ucdName)
     with open(pathToUCDText, "w") as f:
         f.write(plantuml)
         
@@ -72,7 +74,7 @@ def make_diagram(path, filename):
     os.chdir(path)
     
     # add java to PATH in venv
-    # ! java_path needs to be manually configured with the path to java.exe, check PATH in system environment variables
+    # # ! java_path needs to be manually configured with the path to java.exe, check PATH in system environment variables
     current_path = os.environ.get('PATH', '')
     java_path = 'C:\Program Files (x86)\Common Files\Oracle\Java\javapath'
     new_path = f"{java_path};{current_path}" if current_path else java_path

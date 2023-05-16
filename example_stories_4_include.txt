@@ -1,0 +1,2 @@
+As an Officer, I am able to view the student's list, so that I can delete student's information.
+As an Officer, I am able to delete a student's information.
