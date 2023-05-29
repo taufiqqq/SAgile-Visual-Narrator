@@ -1,5 +1,6 @@
 import argparse
-from parser.parser import parse_main
+from parser.parser import Parser
+from transformer.transform import Transformer
 from transformer import transform
 
 def main_cli():
@@ -14,13 +15,25 @@ def main_cli():
             userStories.append(line)
     systemName = args.systemname
             
-    main(userStories, systemName)
+    main = Main(userStories, systemName)
+    main.init_parsing()
+    main.init_transform()
 
-def main(userStories, systemName):
-    user_stories = parse_main(userStories)
-    actors, uc, relationships = transform.create_relationships(user_stories)
-    path, filename = transform.create_text_file(actors, uc, relationships, systemName)
-    transform.make_diagram(path, filename)
+class Main:
+    def __init__(self, userStories, systemName) -> None:
+        self.userStories = userStories
+        self.systemName = systemName
+        self.parser = Parser(userStories)
+        self.transformer = None
     
-    print("Done")
-    return path, filename
+    def init_parsing(self) -> None:
+        self.parser.start_parse()
+        
+    def init_transform(self) -> None:
+        self.transformer = Transformer(self.parser.get_parsed(), self.systemName)
+        self.transformer.create_relationships()
+        self.transformer.create_text_file()
+        self.transformer.make_diagram()
+        
+    def get_filePathAndName(self) -> tuple[str,str]:
+        return self.transformer.get_filepath(), self.transformer.get_filename()

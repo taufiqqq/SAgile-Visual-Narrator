@@ -11,5 +11,5 @@ MEANS_INDICATORS = [
 ]
 
 ENDS_INDICATORS = [
-    [{"LOWER": "so"}, {"LOWER": "that"}, {"LOWER": "i"}]
+    [{"LOWER": "so"}, {"LOWER": "that"}, {"LOWER": "i"}, {"LOWER": "can"}]
 ]
