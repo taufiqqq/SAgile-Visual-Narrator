@@ -1,6 +1,6 @@
-from django.http import HttpResponse
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 import json
+import base64
 from main.main import Main
 
 class Boundary:
@@ -49,8 +49,33 @@ class Boundary:
         
         image_data = self.main.get_image_data()
         if image_data:
-            self.response = HttpResponse(image_data, content_type='image/png')
+            # Convert image data to base64 for JSON response
+            image_base64 = base64.b64encode(image_data).decode('utf-8')
+            plantuml_text = self.main.transformer.get_plantuml_text()
+            plantuml_url = self.main.transformer.get_plantuml_url()
+            
+            # Create response with all data
+            response_data = {
+                'image': image_base64,
+                'plantuml_text': plantuml_text,
+                'plantuml_url': plantuml_url,
+                'success': True
+            }
+            
+            print("\n=== Response Data ===")
+            print("Success: True")
+            print(f"PlantUML Text: {plantuml_text}")
+            print(f"PlantUML URL: {plantuml_url}")
+            print(f"Image data length: {len(image_base64)} bytes")
+            print("==================\n")
+            
+            self.response = JsonResponse(response_data)
         else:
+            print("\n=== Response Data ===")
+            print("Success: False")
+            print("Error: Failed to generate image")
+            print("==================\n")
+            
             self.response = HttpResponseBadRequest('Failed to generate image')
         
     def get_response(self) -> HttpResponse:
