@@ -1,6 +1,7 @@
-from api.boundary_new import Boundary
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
+from api.boundary import Boundary
 
 # Create your views here.
 @csrf_exempt
