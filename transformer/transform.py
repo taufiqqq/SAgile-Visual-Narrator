@@ -1,5 +1,5 @@
-import tempfile
-import os
+import plantuml
+import requests
 from .Actor import Actor
 from .UseCase import UseCase
 
@@ -10,8 +10,9 @@ class Transformer:
         self.actors = None
         self.useCases = None
         self.relationships = None
-        self.ucdPath = None
-        self.ucdName = None
+        self.plantuml_text = None
+        self.plantuml_url = None
+        self.image_data = None
 
     def create_relationships(self) -> None:
         actors = {}
@@ -75,7 +76,7 @@ class Transformer:
         self.useCases = useCases
         self.relationships = relationships
 
-    def create_text_file(self) -> None:
+    def create_plantuml_text(self) -> None:
         plantuml = '\n@startuml\nleft to right direction\n'
         
         # declare actors
@@ -110,37 +111,33 @@ class Transformer:
                             plantuml += f'\n"{r1}" .> "{incl}" : {r2}'
                 
         plantuml += '\n\n@enduml'
-        
-        ucdName = f"{self.systemName}.txt"
-
-        # Use tempfile to create a temporary directory
-        with tempfile.TemporaryDirectory() as temp_dir:
-            # Path for the UCD text file in the temporary directory
-            pathToUCDText = os.path.join(temp_dir, ucdName)
-            
-            # Write the PlantUML text to the temporary file
-            with open(pathToUCDText, "w") as f:
-                f.write(plantuml)
-            
-            # Store path and filename for later use
-            self.ucdPath = temp_dir  # Temporary directory path
-            self.ucdName = ucdName    # The file name
+        self.plantuml_text = plantuml
+        print("\n=== PlantUML Text ===")
+        print(self.plantuml_text)
+        print("===================\n")
 
     def make_diagram(self) -> None:
-        # change path to plantuml directory
-        os.chdir(self.ucdPath)
+        # Create PlantUML server instance with PNG format
+        plantuml_server = plantuml.PlantUML(url='http://www.plantuml.com/plantuml/png/')
         
-        # add java to PATH in venv
-        current_path = os.environ.get('PATH', '')
-        java_path = 'C:\Program Files (x86)\Common Files\Oracle\Java\javapath'
-        new_path = f"{java_path};{current_path}" if current_path else java_path
-        os.environ['PATH'] = new_path
+        # Generate the PlantUML URL
+        self.plantuml_url = plantuml_server.get_url(self.plantuml_text)
+        print("\n=== PlantUML URL ===")
+        print(self.plantuml_url)
+        print("==================\n")
         
-        # run command to make diagram
-        os.system(f"java -jar plantuml.jar {self.ucdName}")
+        # Fetch the actual image data
+        response = requests.get(self.plantuml_url)
+        if response.status_code == 200:
+            self.image_data = response.content
+        else:
+            self.image_data = None
         
-    def get_filepath(self) -> str:
-        return self.ucdPath
+    def get_plantuml_text(self) -> str:
+        return self.plantuml_text
     
-    def get_filename(self) -> str:
-        return self.ucdName
+    def get_plantuml_url(self) -> str:
+        return self.plantuml_url
+        
+    def get_image_data(self) -> bytes:
+        return self.image_data

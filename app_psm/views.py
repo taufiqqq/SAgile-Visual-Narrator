@@ -1,4 +1,4 @@
-from api.boundary import Boundary
+from api.boundary_new import Boundary
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 

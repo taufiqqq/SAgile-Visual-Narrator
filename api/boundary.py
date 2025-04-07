@@ -1,7 +1,6 @@
-from django.http import FileResponse
+from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 import json
-import os
 from main.main import Main
 
 class Boundary:
@@ -22,6 +21,10 @@ class Boundary:
             json_data = json.loads(self.request.body)
             userStories = json_data['user_stories']
             systemName = json_data['system_name']
+            print("\n=== Request Data ===")
+            print(f"User Stories: {userStories}")
+            print(f"System Name: {systemName}")
+            print("==================\n")
         except json.JSONDecodeError:
             return HttpResponseBadRequest('Invalid JSON payload')
         
@@ -44,16 +47,11 @@ class Boundary:
         self.main.init_parsing()
         self.main.init_transform()
         
-        filepath, filename = self.main.get_filePathAndName()
-        filename = filename.replace('.txt', '.png')
-        image_path = os.path.join(filepath, filename)
-        print(image_path)
+        image_data = self.main.get_image_data()
+        if image_data:
+            self.response = HttpResponse(image_data, content_type='image/png')
+        else:
+            self.response = HttpResponseBadRequest('Failed to generate image')
         
-        file = open(image_path, 'rb')
-        response = FileResponse(file, content_type='image/png')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        
-        self.response = response
-        
-    def get_response(self) -> FileResponse:
+    def get_response(self) -> HttpResponse:
         return self.response
