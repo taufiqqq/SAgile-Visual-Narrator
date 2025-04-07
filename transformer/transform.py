@@ -1,5 +1,7 @@
 import tempfile
 import os
+from .Actor import Actor
+from .UseCase import UseCase
 
 class Transformer:
     def __init__(self, userStories, systemName) -> None:
