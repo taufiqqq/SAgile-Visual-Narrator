@@ -1,5 +1,4 @@
-from .Actor import Actor
-from .UseCase import UseCase
+import tempfile
 import os
 
 class Transformer:
@@ -47,7 +46,7 @@ class Transformer:
                 ends = userStory['ends']
                 means = userStory['means']
                 found = False
-                for actor,uc in relationships:
+                for actor, uc in relationships:
                     if uc == ends:
                         # create new usecases with ends as main, uc as includes
                         # put in useCases and relationships
@@ -63,11 +62,11 @@ class Transformer:
                         found = True
                         break
                     
-                # remove actor,uc
+                # remove actor, uc
                 if found:
-                    for actor,uc in relationships:
+                    for actor, uc in relationships:
                         if uc == userStory['means']:
-                            relationships.remove((actor,uc))
+                            relationships.remove((actor, uc))
                             break
                 
         self.actors = actors
@@ -90,7 +89,7 @@ class Transformer:
         # do connection
         actorIndex = -1
         prevActor = None
-        for r1,r2 in self.relationships:
+        for r1, r2 in self.relationships:
             # relationship between actor and uc
             if isinstance(r1, Actor) and isinstance(r2, UseCase):
                 if r1 != prevActor:
@@ -111,21 +110,25 @@ class Transformer:
         plantuml += '\n\n@enduml'
         
         ucdName = f"{self.systemName}.txt"
-        # cwd = os.getcwd()
-        app_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        pathToUCDText = os.path.join(app_dir, 'transformer', 'plantuml', ucdName)
-        with open(pathToUCDText, "w") as f:
-            f.write(plantuml)
+
+        # Use tempfile to create a temporary directory
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Path for the UCD text file in the temporary directory
+            pathToUCDText = os.path.join(temp_dir, ucdName)
             
-        self.ucdPath = os.path.dirname(pathToUCDText)
-        self.ucdName = ucdName
+            # Write the PlantUML text to the temporary file
+            with open(pathToUCDText, "w") as f:
+                f.write(plantuml)
+            
+            # Store path and filename for later use
+            self.ucdPath = temp_dir  # Temporary directory path
+            self.ucdName = ucdName    # The file name
 
     def make_diagram(self) -> None:
         # change path to plantuml directory
         os.chdir(self.ucdPath)
         
         # add java to PATH in venv
-        # # ! java_path needs to be manually configured with the path to java.exe, check PATH in system environment variables
         current_path = os.environ.get('PATH', '')
         java_path = 'C:\Program Files (x86)\Common Files\Oracle\Java\javapath'
         new_path = f"{java_path};{current_path}" if current_path else java_path
@@ -139,4 +142,3 @@ class Transformer:
     
     def get_filename(self) -> str:
         return self.ucdName
-    
