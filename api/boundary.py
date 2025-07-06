@@ -20,7 +20,7 @@ class Boundary:
         try:
             json_data = json.loads(self.request.body)
             userStories = json_data['user_stories']
-            systemName = json_data['system_name']
+            systemName = json_data['system_name'].replace(' ', '_')
             print("\n=== Request Data ===")
             print(f"User Stories: {userStories}")
             print(f"System Name: {systemName}")
